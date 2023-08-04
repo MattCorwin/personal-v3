@@ -10,9 +10,17 @@ export default {
   },
   stacks(app) {
     app.stack(function Site({ stack }) {
-      const site = new RemixSite(stack, "site", {});
+      const site = new RemixSite(stack, "site", {
+        customDomain:
+      app.stage === "prod"
+        ? {
+            domainName: "mattcorwin.com",
+            domainAlias: "www.mattcorwin.com",
+          }
+        : undefined,
+      });
       stack.addOutputs({
-        url: site.url,
+        url: site.customDomainUrl || site.url || "http://localhost:3000",
       });
     });
   },
