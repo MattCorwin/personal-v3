@@ -15,24 +15,24 @@ export default function Index() {
           alt="Person standing in front of a tree"
         />
       </div>
-      <Link to="https://www.findgiftsfor.com/" prefetch="render">
-        <div className="polaroid">
+      <div className="polaroid">
+        <Link to="https://www.findgiftsfor.com/" prefetch="render">
           <img
             className="rounded-image"
             src={fgf}
             alt="Gift search website with robot"
           />
-        </div>
-      </Link>
-      <Link to="https://www.falofofo.com/" prefetch="render">
-        <div className="polaroid">
+        </Link>
+      </div>
+      <div className="polaroid">
+        <Link to="https://www.falofofo.com/" prefetch="render">
           <img
             className="rounded-image"
             src={fofo}
             alt="Language learning website with rabbit"
           />
-        </div>
-      </Link>
+        </Link>
+      </div>
     </div>
   );
 }
