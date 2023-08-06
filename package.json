@@ -5,6 +5,7 @@
   "scripts": {
     "build": "remix build",
     "dev": "sst bind remix dev",
+    "deploy": "sst deploy",
     "start": "remix-serve build",
     "typecheck": "tsc",
     "sst:deploy": "sst deploy",
