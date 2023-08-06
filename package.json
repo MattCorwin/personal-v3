@@ -13,7 +13,9 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.369.0",
     "@aws-sdk/s3-request-presigner": "^3.369.0",
-    "@fontsource/lato": "^5.0.5",
+    "@fontsource/cormorant-garamond": "^5.0.8",
+    "@fontsource/titillium-web": "^5.0.8",
+    "@phosphor-icons/react": "^2.0.10",
     "@remix-run/css-bundle": "^1.18.1",
     "@remix-run/node": "^1.18.1",
     "@remix-run/react": "^1.18.1",

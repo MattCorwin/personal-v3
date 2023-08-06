@@ -1,55 +1,106 @@
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
-  .polaroid {
-    max-width: 85%;
-    /*max-height: 375px;*/
+  body {
+    font-size: 14px;
+  }
+  .stackable-item {
+    width: 75%;
+  }
+  .stackable {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
   }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
-  .polaroid {
-    max-width: 70%;
+  body {
+    font-size: 14px;
+  }
+
+  .stackable-item {
+    width: 70%;
+  }
+  .stackable {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
   }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
-  .polaroid {
-    max-width: 400px;
+  body {
+    font-size: 16px;
+  }
+
+  .stackable-item {
+    width: 370px;
+  }
+  .stackable {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 20px;
   }
 }
 
 body {
-  background-color: #E6E6E6;
-  font-family: lato;
+  background-color: #FAF5EF;
 }
 
 h1 {
-  background-color: #E6E6E6;
-  font-family: lato;
-  font-weight: 700;
+  font-family: Titillium Web;
+  font-weight: 300;
+  font-size: 2.5em;
+  letter-spacing: .4em;
   margin-block-end: .5em;
+  margin-bottom: -10px;
+  padding-left: 12px;
+}
+
+h2 {
+  font-family: Cormorant Garamond;
+  font-weight: 400;
+  margin: 0;
+}
+
+.stackable {
+  display: flex;
+  font-weight: 400;
 }
 
 .wrapper {
-  font-family: lato, system-ui, sans-serif;
   line-height: 1.4;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 5vh;
 }
 
-.polaroid {
+.stackable-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: justify;
+  justify-content: center;
+}
+
+.elevated-card {
   border-radius: 6px;
-  background-color: #E6E6E6;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2), 0 0 20px 0 rgba(0, 0, 0, 0.19);
-  transform: translateY(-5px);
 }
 
 .rounded-image {
   max-width: 100%;
   margin-bottom: -6px;
   border-radius: 6px;
+}
+
+.contact-box {
+  padding-top: 20px;
+}
+
+.contact-icon {
+  padding: 0px 10px 0px 10px;
 }
