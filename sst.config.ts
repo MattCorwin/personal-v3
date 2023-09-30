@@ -23,7 +23,7 @@ export default {
           },
         },
         routes: {
-          "POST /question": "src/create.main",
+          "POST /question": "app.lambda_handler",
         },
       });
       const site = new RemixSite(stack, "site", {
