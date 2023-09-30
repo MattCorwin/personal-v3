@@ -13,7 +13,7 @@ export default {
   stacks(app) {
     app.stack(function Site({ stack }) {
       const dockerFn = new Function(stack, "pythonDockerFunction", {
-        timeout: 30,
+        timeout: 60,
             environment: { ssmParamName: SSM_PARAM_NAME },
             permissions: ["ssm"],
             runtime: "container",
