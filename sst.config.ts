@@ -1,5 +1,5 @@
 import type { SSTConfig } from "sst";
-import { RemixSite, Api } from "sst/constructs";
+import { RemixSite, Api, Function } from "sst/constructs";
 
 const SSM_PARAM_NAME = "inferenceKeysv1";
 
@@ -12,18 +12,16 @@ export default {
   },
   stacks(app) {
     app.stack(function Site({ stack }) {
-      const api = new Api(stack, "Api", {
-        defaults: {
-          function: {
-            timeout: 30,
+      const dockerFn = new Function(stack, "pythonDockerFunction", {
+        timeout: 30,
             environment: { ssmParamName: SSM_PARAM_NAME },
             permissions: ["ssm"],
             runtime: "container",
             handler: "functions",
-          },
-        },
+      })
+      const api = new Api(stack, "Api", {
         routes: {
-          "POST /question": "app.lambda_handler",
+          "POST /question": dockerFn,
         },
       });
       const site = new RemixSite(stack, "site", {
