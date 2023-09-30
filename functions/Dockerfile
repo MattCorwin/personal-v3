@@ -1,11 +1,14 @@
 # Pull the base image with python 3.8 as a runtime for your Lambda
-FROM public.ecr.aws/lambda/python:3.10
+FROM public.ecr.aws/lambda/python:3.9
 
+# RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 # Copy the earlier created requirements.txt file to the container
 COPY requirements.txt ./
 
 # Install the python requirements from requirements.txt
-RUN python3.10 -m pip install -r requirements.txt
+RUN python3.9 -m pip install -r requirements.txt
 
 # Copy the earlier created app.py file to the container
 COPY inference/app.py ./
