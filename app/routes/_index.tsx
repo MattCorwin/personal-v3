@@ -5,10 +5,8 @@ import { Link } from "@remix-run/react";
 import { LinkedinLogo, GithubLogo } from "@phosphor-icons/react";
 import "@fontsource/cormorant-garamond/400.css";
 import "@fontsource/titillium-web/300.css";
-import { Api } from "sst/node/api";
 
 export default function Index() {
-  console.log(`received api url: ${(Api as any).api.url}`);
   return (
     <div className="wrapper">
       <h1>MATT CORWIN</h1>
