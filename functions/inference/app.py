@@ -55,7 +55,7 @@ def lambda_handler(event, context):
 
         print("Question: {0}, Answer: {1}".format(question, answer))
         
-        if len(answer > 0):
+        if len(answer) > 0:
           return {
               "statusCode": 200,
               "body": json.dumps({"Question": question, "Answer": answer}),
