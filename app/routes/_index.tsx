@@ -1,6 +1,7 @@
 import me from "../images/bwCropped.jpg";
 import fgf from "../images/findGiftsFor.png";
 import fofo from "../images/fofo.png";
+import QueryBox from "~/components/QueryBox/QueryBox";
 import { Link, useLoaderData } from "@remix-run/react";
 import { LinkedinLogo, GithubLogo } from "@phosphor-icons/react";
 import "@fontsource/cormorant-garamond/400.css";
@@ -10,7 +11,7 @@ import { json } from "@remix-run/node";
 export async function loader() {
   return json({
     ENV: {
-      API_URL: process.env.API_URL,
+      API_URL: process.env.API_URL as string,
     },
   });
 }
@@ -56,6 +57,9 @@ export default function Index() {
         </div>
       </div>
       <div className="stackable">
+        <div className="stackable-item">
+          <QueryBox url={env.ENV.API_URL} />
+        </div>
         <div className="stackable-item elevated-card">
           <Link to="https://www.findgiftsfor.com/" prefetch="render">
             <img

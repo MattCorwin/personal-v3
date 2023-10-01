@@ -21,7 +21,7 @@ export default {
       })
       const api = new Api(stack, "Api", {
         routes: {
-          "POST /question": dockerFn,
+          "POST /answer": dockerFn,
         },
       });
       const site = new RemixSite(stack, "site", {
