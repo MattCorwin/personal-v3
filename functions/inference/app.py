@@ -1,7 +1,23 @@
 import json
 from transformers import AutoTokenizer, AutoModelForQuestionAnswering
 import torch
+import requests
+from bs4 import BeautifulSoup
 
+
+def scrapePageText(url):
+    articleText = ""
+    response = requests.get(url)
+    print(response.status_code)
+    soup = BeautifulSoup(response.content, "html.parser")
+
+    paragraphs = soup.find_all("p")
+    for p in paragraphs:
+        articleText = articleText + p.text
+    return articleText
+
+
+articleText = scrapePageText("https://en.wikipedia.org/wiki/Machine_learning")
 tokenizer = AutoTokenizer.from_pretrained("model/")
 model = AutoModelForQuestionAnswering.from_pretrained("model/")
 
@@ -10,7 +26,7 @@ def lambda_handler(event, context):
     body = json.loads(event["body"])
 
     question = body["question"]
-    context = body["context"]
+    context = articleText
 
     inputs = tokenizer.encode_plus(
         question, context, add_special_tokens=True, return_tensors="pt"
