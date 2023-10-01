@@ -6,27 +6,32 @@ from bs4 import BeautifulSoup
 
 
 def scrapePageText(url):
-    articleText = ""
+    text = ""
     response = requests.get(url)
     print(response.status_code)
     soup = BeautifulSoup(response.content, "html.parser")
 
     paragraphs = soup.find_all("p")
     for p in paragraphs:
-        articleText = articleText + p.text
-    return articleText
+        text = text + p.text
+    return text
 
 
-articleText = scrapePageText("https://en.wikipedia.org/wiki/Machine_learning")
+articleText = ''
 tokenizer = AutoTokenizer.from_pretrained("model/")
 model = AutoModelForQuestionAnswering.from_pretrained("model/")
 
 
 def lambda_handler(event, context):
+    global articleText
     body = json.loads(event["body"])
+    
+    if len(articleText) < 1:
+      articleText = scrapePageText("https://en.wikipedia.org/wiki/Machine_learning")
 
     question = body["question"]
-    context = articleText
+    # model can only handle 512 characters of context
+    context = articleText[:512]
 
     inputs = tokenizer.encode_plus(
         question, context, add_special_tokens=True, return_tensors="pt"
