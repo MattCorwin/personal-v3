@@ -14,10 +14,13 @@ def scrapePageText(url):
     paragraphs = soup.find_all("p")
     for p in paragraphs:
         text = text + p.text
-    return text
+
+    chunk_size = 512
+    chunks = [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
+    return chunks
 
 
-articleText = ''
+articleText = ""
 tokenizer = AutoTokenizer.from_pretrained("model/")
 model = AutoModelForQuestionAnswering.from_pretrained("model/")
 
@@ -25,33 +28,39 @@ model = AutoModelForQuestionAnswering.from_pretrained("model/")
 def lambda_handler(event, context):
     global articleText
     body = json.loads(event["body"])
-    
+
     if len(articleText) < 1:
-      articleText = scrapePageText("https://en.wikipedia.org/wiki/Machine_learning")
+        articleText = scrapePageText("https://en.wikipedia.org/wiki/Machine_learning")
 
     question = body["question"]
-    # model can only handle 512 characters of context
-    context = articleText[:512]
+    for context in articleText:
+        # model can only handle 512 characters of context
+        # context = articleText[:512]
 
-    inputs = tokenizer.encode_plus(
-        question, context, add_special_tokens=True, return_tensors="pt"
-    )
-    input_ids = inputs["input_ids"].tolist()[0]
+        inputs = tokenizer.encode_plus(
+            question, context, add_special_tokens=True, return_tensors="pt"
+        )
+        input_ids = inputs["input_ids"].tolist()[0]
 
-    output = model(**inputs)
-    answer_start_scores = output.start_logits
-    answer_end_scores = output.end_logits
+        output = model(**inputs)
+        answer_start_scores = output.start_logits
+        answer_end_scores = output.end_logits
 
-    answer_start = torch.argmax(answer_start_scores)
-    answer_end = torch.argmax(answer_end_scores) + 1
+        answer_start = torch.argmax(answer_start_scores)
+        answer_end = torch.argmax(answer_end_scores) + 1
 
-    answer = tokenizer.convert_tokens_to_string(
-        tokenizer.convert_ids_to_tokens(input_ids[answer_start:answer_end])
-    )
+        answer = tokenizer.convert_tokens_to_string(
+            tokenizer.convert_ids_to_tokens(input_ids[answer_start:answer_end])
+        )
 
-    print("Question: {0}, Answer: {1}".format(question, answer))
-
+        print("Question: {0}, Answer: {1}".format(question, answer))
+        
+        if len(answer > 0):
+          return {
+              "statusCode": 200,
+              "body": json.dumps({"Question": question, "Answer": answer}),
+          }
     return {
-        "statusCode": 200,
-        "body": json.dumps({"Question": question, "Answer": answer}),
-    }
+              "statusCode": 200,
+              "body": json.dumps({"Question": question, "Answer": 'Answer could not be determined'}),
+          }

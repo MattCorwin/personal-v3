@@ -7,6 +7,7 @@ import "@fontsource/cormorant-garamond/400.css";
 import "@fontsource/titillium-web/300.css";
 
 export default function Index() {
+  console.log(`api url ${process.env.API_URL}`);
   return (
     <div className="wrapper">
       <h1>MATT CORWIN</h1>

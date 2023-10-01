@@ -26,6 +26,9 @@ export default {
       });
       const site = new RemixSite(stack, "site", {
         bind: [api],
+        environment: {
+          API_URL: api.url,
+        },
         customDomain:
           app.stage === "prod"
             ? {
