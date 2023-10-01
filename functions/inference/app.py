@@ -28,17 +28,28 @@ model = AutoModelForQuestionAnswering.from_pretrained("model/")
 def lambda_handler(event, context):
     global articleText
     body = json.loads(event["body"])
+    print(articleText)
 
     if len(articleText) < 1:
         articleText = scrapePageText("https://en.wikipedia.org/wiki/Machine_learning")
 
     question = body["question"]
-    for context in articleText:
-        # model can only handle 512 characters of context
-        # context = articleText[:512]
+    print(question)
+    for question_context in articleText:
+        print(question_context)
+        # model can only handle 512 characters of question_context
+        # question_context = articleText[:512]
+        if context.get_remaining_time_in_millis() < 4000:
+            print("exiting before timeout")
+            return {
+                "statusCode": 200,
+                "body": json.dumps(
+                    {"Question": question, "Answer": "Answer could not be determined"}
+                ),
+            }
 
         inputs = tokenizer.encode_plus(
-            question, context, add_special_tokens=True, return_tensors="pt"
+            question, question_context, add_special_tokens=True, return_tensors="pt"
         )
         input_ids = inputs["input_ids"].tolist()[0]
 
@@ -54,13 +65,15 @@ def lambda_handler(event, context):
         )
 
         print("Question: {0}, Answer: {1}".format(question, answer))
-        
+
         if len(answer) > 0:
-          return {
-              "statusCode": 200,
-              "body": json.dumps({"Question": question, "Answer": answer}),
-          }
+            return {
+                "statusCode": 200,
+                "body": json.dumps({"Question": question, "Answer": answer}),
+            }
     return {
-              "statusCode": 200,
-              "body": json.dumps({"Question": question, "Answer": 'Answer could not be determined'}),
-          }
+        "statusCode": 200,
+        "body": json.dumps(
+            {"Question": question, "Answer": "Answer could not be determined"}
+        ),
+    }
