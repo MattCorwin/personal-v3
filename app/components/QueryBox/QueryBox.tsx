@@ -11,6 +11,7 @@ const QueryBox = (props: { url: string }) => {
   const onClick = async (): Promise<void> => {
     if (question) {
       setLoading(true);
+      setAnswer('');
       let answer = "";
       try {
         answer = await fetchAnswer(props.url, question);
