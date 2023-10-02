@@ -15,9 +15,6 @@ def scrapePageText(url):
     for p in paragraphs:
         text = text + p.text
 
-    # chunk_size = 512
-    # chunks = [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
-    # return chunks
     print('returning page text')
     return text.split()
 
@@ -43,14 +40,12 @@ def lambda_handler(event, context):
 
     for question_context in chunks:
         print(question_context)
-        # model can only handle 512 characters of question_context
-        # question_context = articleText[:512]
         if context.get_remaining_time_in_millis() < 4000:
             print("exiting before timeout")
             return {
                 "statusCode": 200,
                 "body": json.dumps(
-                    {"Question": question, "Answer": "Answer could not be determined"}
+                    {"Question": question, "Answer": "Answer could not be determined before timeout."}
                 ),
             }
 

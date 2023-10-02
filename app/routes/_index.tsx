@@ -18,7 +18,6 @@ export async function loader() {
 
 export default function Index() {
   const env = useLoaderData<typeof loader>();
-  console.log(JSON.stringify(env));
   return (
     <div className="wrapper">
       <h1>MATT CORWIN</h1>
