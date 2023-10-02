@@ -38,7 +38,7 @@ def lambda_handler(event, context):
     print(question)
 
     question_length = len(question.split())
-    chunk_size = 460 - question_length
+    chunk_size = 360 - question_length
     chunks = [articleText[i : i + chunk_size] for i in range(0, len(articleText), chunk_size)]
 
     for question_context in chunks:
@@ -55,7 +55,7 @@ def lambda_handler(event, context):
             }
 
         inputs = tokenizer.encode_plus(
-            question.split(), question_context, add_special_tokens=True, is_split_into_words=True, return_tensors="pt"
+            question.split(), question_context, add_special_tokens=True, is_split_into_words=True, truncation=True, return_tensors="pt"
         )
         input_ids = inputs["input_ids"].tolist()[0]
 

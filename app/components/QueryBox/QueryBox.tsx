@@ -11,7 +11,7 @@ const QueryBox = (props: { url: string }) => {
   const onClick = async (): Promise<void> => {
     if (question) {
       setLoading(true);
-      let answer = '';
+      let answer = "";
       try {
         answer = await fetchAnswer(props.url, question);
       } catch (error) {
@@ -69,9 +69,7 @@ const QueryBox = (props: { url: string }) => {
         >
           Ask Distilbert
         </button>
-        { loading && (
-          <h2>Loading...</h2>
-        )}
+        {loading && <h2>Loading...</h2>}
         {answer && (
           <>
             <h2>Answer:</h2>
@@ -83,10 +81,11 @@ const QueryBox = (props: { url: string }) => {
         <h2>
           Recently I deployed an open source machine learning model for text
           summary in order to explore deploying ML models to AWS. You can play
-          with the model by asking a question on the left. I had a great time
-          deploying an AWS Lambda function backed by a Docker image containing
-          the ML model. Huggingface makes it easy to pull down open source
-          models, I intend to continue learning in this space.
+          with the model by asking a question about the Machine Learning
+          Wikipedia page. This project centers on an AWS Lambda function backed
+          by a Docker image containing the ML model, with code for scraping text
+          from Wikipedia. Huggingface makes it easy to use open source models.
+          There is so much more to learn in this space!
         </h2>
       </div>
     </>
