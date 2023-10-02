@@ -15,15 +15,15 @@ def scrapePageText(url):
     for p in paragraphs:
         text = text + p.text
 
-    chunk_size = 512
-    chunks = [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
-    return chunks
+    # chunk_size = 512
+    # chunks = [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
+    # return chunks
+    return text.split()
 
 
 articleText = ""
 tokenizer = AutoTokenizer.from_pretrained("model/")
 model = AutoModelForQuestionAnswering.from_pretrained("model/")
-
 
 def lambda_handler(event, context):
     global articleText
@@ -35,7 +35,12 @@ def lambda_handler(event, context):
 
     question = body["question"]
     print(question)
-    for question_context in articleText:
+
+    question_length = len(question.split())
+    chunk_size = 512 - question_length
+    chunks = [articleText[i : i + chunk_size] for i in range(0, len(articleText), chunk_size)]
+
+    for question_context in chunks:
         print(question_context)
         # model can only handle 512 characters of question_context
         # question_context = articleText[:512]
@@ -49,7 +54,7 @@ def lambda_handler(event, context):
             }
 
         inputs = tokenizer.encode_plus(
-            question, question_context, add_special_tokens=True, return_tensors="pt"
+            question, question_context, add_special_tokens=True, is_split_into_words=True, return_tensors="pt"
         )
         input_ids = inputs["input_ids"].tolist()[0]
 

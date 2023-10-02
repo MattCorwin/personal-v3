@@ -38,7 +38,7 @@ const QueryBox = (props: { url: string }) => {
             >
               Wikipedia article
             </a>{" "}
-            and an{" "}
+            on machine learning and an{" "}
             <a
               href="https://huggingface.co/distilbert-base-uncased-distilled-squad"
               target="_blank"
