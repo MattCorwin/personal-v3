@@ -5,7 +5,7 @@ export const fetchAnswer = async (url: string, question: string): Promise<string
   });
   let retries = 0;
   let answer;
-  while (!answer && retries < 2) {
+  while (!answer && retries < 3) {
     try {
       retries++;
       const response = await fetch(`${url}${path}`, {
@@ -16,7 +16,9 @@ export const fetchAnswer = async (url: string, question: string): Promise<string
       answer = Answer;
     } catch (error) {
       console.log(error);
-      alert(error);
+      await new Promise((resolve) => {
+        setTimeout(resolve, 2000)
+      });
     }
   }
   return answer;
