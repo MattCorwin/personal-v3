@@ -18,6 +18,7 @@ def scrapePageText(url):
     # chunk_size = 512
     # chunks = [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
     # return chunks
+    print('returning page text')
     return text.split()
 
 
@@ -37,7 +38,7 @@ def lambda_handler(event, context):
     print(question)
 
     question_length = len(question.split())
-    chunk_size = 512 - question_length
+    chunk_size = 460 - question_length
     chunks = [articleText[i : i + chunk_size] for i in range(0, len(articleText), chunk_size)]
 
     for question_context in chunks:
