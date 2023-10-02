@@ -1,12 +1,24 @@
 import me from "../images/bwCropped.jpg";
 import fgf from "../images/findGiftsFor.png";
 import fofo from "../images/fofo.png";
-import { Link } from "@remix-run/react";
+import QueryBox from "~/components/QueryBox/QueryBox";
+import { Link, useLoaderData } from "@remix-run/react";
 import { LinkedinLogo, GithubLogo } from "@phosphor-icons/react";
 import "@fontsource/cormorant-garamond/400.css";
 import "@fontsource/titillium-web/300.css";
+import { json } from "@remix-run/node";
+
+export async function loader() {
+  return json({
+    ENV: {
+      API_URL: process.env.API_URL as string,
+    },
+  });
+}
 
 export default function Index() {
+  const env = useLoaderData<typeof loader>();
+  console.log(JSON.stringify(env));
   return (
     <div className="wrapper">
       <h1>MATT CORWIN</h1>
@@ -43,6 +55,9 @@ export default function Index() {
             </a>
           </div>
         </div>
+      </div>
+      <div className="stackable">
+        <QueryBox url={env.ENV.API_URL} />
       </div>
       <div className="stackable">
         <div className="stackable-item elevated-card">
