@@ -55,7 +55,7 @@ def lambda_handler(event, context):
             }
 
         inputs = tokenizer.encode_plus(
-            question.split(), question_context, add_special_tokens=True, is_split_into_words=True, truncation=True, return_tensors="pt"
+            question.split(), question_context, add_special_tokens=True, is_split_into_words=True, truncation=True, max_length=512, return_tensors="pt"
         )
         input_ids = inputs["input_ids"].tolist()[0]
 
