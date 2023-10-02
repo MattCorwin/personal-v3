@@ -57,9 +57,9 @@ export default function Index() {
         </div>
       </div>
       <div className="stackable">
-        <div className="stackable-item">
-          <QueryBox url={env.ENV.API_URL} />
-        </div>
+        <QueryBox url={env.ENV.API_URL} />
+      </div>
+      <div className="stackable">
         <div className="stackable-item elevated-card">
           <Link to="https://www.findgiftsfor.com/" prefetch="render">
             <img
