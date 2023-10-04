@@ -77,6 +77,12 @@ h2 {
   margin: 0;
 }
 
+h3 {
+  font-family: Cormorant Garamond;
+  font-weight: 400;
+  margin: 0;
+}
+
 .stackable {
   display: flex;
   font-weight: 400;
@@ -88,6 +94,13 @@ h2 {
   flex-direction: column;
   align-items: center;
   gap: 5vh;
+}
+
+.heading-with-sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2em;
 }
 
 .stackable-item {
@@ -111,8 +124,11 @@ h2 {
 
 .contact-box {
   padding-top: 20px;
+  display: flex;
+  align-items: center;
 }
 
 .contact-icon {
   padding: 0px 10px 0px 10px;
+  color:#FF8552
 }
