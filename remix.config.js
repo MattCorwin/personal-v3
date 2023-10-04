@@ -6,5 +6,11 @@ module.exports = {
   serverBuildPath: "build/index.js",
   // publicPath: "/build/",
   serverModuleFormat: "cjs",
-  serverDependenciesToBundle: ["@phosphor-icons/react"]
+  serverDependenciesToBundle: ["@phosphor-icons/react"],
+  future: {
+    v2_errorBoundary: true,
+    v2_meta: true,
+    v2_normalizeFormMethod: true,
+    v2_routeConvention: true,
+  },
 };

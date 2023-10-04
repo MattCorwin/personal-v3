@@ -29,7 +29,6 @@ export default {
         environment: {
           API_URL: api.url,
         },
-        nodejs: { format: 'cjs' },
         customDomain:
           app.stage === "prod"
             ? {
