@@ -16,6 +16,10 @@
     align-items: center;
     gap: 30px;
   }
+
+  .wrapper {
+    max-width: 95%;
+  }
 }
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -35,6 +39,10 @@
     flex-direction: column;
     align-items: center;
     gap: 30px;
+  }
+
+  .wrapper {
+    max-width: 400px;
   }
 }
 
@@ -56,10 +64,17 @@
     align-items: stretch;
     gap: 30px;
   }
+
+  .wrapper {
+    max-width: 600px;
+  }
 }
 
 body {
   background-color: #FAF5EF;
+  justify-content: center;
+  font-family: Cormorant Garamond;
+  font-weight: 400;
 }
 
 h1 {
@@ -81,6 +96,12 @@ h3 {
   font-family: Cormorant Garamond;
   font-weight: 400;
   margin: 0;
+}
+
+code {
+  font-size: .8em;
+  display: block;
+  overflow: scroll;
 }
 
 .stackable {

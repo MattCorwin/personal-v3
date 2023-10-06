@@ -19,7 +19,7 @@ def scrapePageText(url):
     return text.split()
 
 
-articleText = ""
+articleText = []
 tokenizer = AutoTokenizer.from_pretrained("model/")
 model = AutoModelForQuestionAnswering.from_pretrained("model/")
 

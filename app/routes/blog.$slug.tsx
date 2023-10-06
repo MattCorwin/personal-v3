@@ -2,7 +2,6 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { marked } from "marked";
-
 import { getPost } from "~/models/post.server";
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -13,20 +12,30 @@ export const loader: LoaderFunction = async ({ params }) => {
   }
 };
 
+export const meta = ({ data }) => {
+  return [
+    {
+      title: data.post.title
+    },
+    {
+      name: "description",
+      content: data.post.summary
+    },
+  ];
+};
+
 export default function PostSlug() {
   const { post, html } = useLoaderData<typeof loader>();
   return (
-    <div className="wrapper">
-      <h1>{post.title}</h1>
-      <h2>{post.summary}</h2>
+    <div className="wrapper" style={{gap: '1em', margin: 'auto'}}>
+      <h1 style={{ marginBottom: '.5em'}}>{post.title}</h1>
+      <h3 style={{ marginBottom: '.5em'}}>{post.date}</h3>
       <img
-        className="rounded-image"
         src={post.image}
-        alt="Person standing in front of a tree"
+        alt={post.imageAltText}
+        style={{ maxWidth: '300px' }}
       />
-
-      <h2>{post.body}</h2>
-      <div dangerouslySetInnerHTML={{ __html: html }} />
+      <div dangerouslySetInnerHTML={{ __html: html }} style={{ maxWidth: 'inherit' }}/>
     </div>
   );
 }

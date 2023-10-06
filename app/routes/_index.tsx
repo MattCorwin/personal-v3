@@ -9,6 +9,18 @@ import "@fontsource/cormorant-garamond/400.css";
 import "@fontsource/titillium-web/300.css";
 import { json } from "@remix-run/node";
 
+export const meta = () => {
+  return [
+    {
+      title: "Matt Corwin - Software Developer"
+    },
+    {
+      name: "description",
+      content: "Software Developer | Typescript | React | Node.js | AWS"
+    },
+  ];
+};
+
 export async function loader() {
   return json({
     ENV: {
