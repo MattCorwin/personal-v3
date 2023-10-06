@@ -21,7 +21,7 @@ export const loader = async () => {
 export default function Blog() {
   const { posts } = useLoaderData<typeof loader>();
   return (
-    <div className="wrapper" style={{ margin: 'auto' }}>
+    <div className="wrapper sized-wrapper" style={{ margin: 'auto' }}>
       <div className="heading-with-sub">
         <h1>BLOG</h1>
         <h2>Stuff I'll forget if I don't write it down</h2>

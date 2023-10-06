@@ -27,7 +27,7 @@ export const meta = ({ data }) => {
 export default function PostSlug() {
   const { post, html } = useLoaderData<typeof loader>();
   return (
-    <div className="wrapper" style={{gap: '1em', margin: 'auto'}}>
+    <div className="wrapper sized-wrapper" style={{gap: '1em', margin: 'auto'}}>
       <h1 style={{ marginBottom: '.5em'}}>{post.title}</h1>
       <h3 style={{ marginBottom: '.5em'}}>{post.date}</h3>
       <img

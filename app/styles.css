@@ -17,7 +17,7 @@
     gap: 30px;
   }
 
-  .wrapper {
+  .sized-wrapper {
     max-width: 95%;
   }
 }
@@ -41,7 +41,7 @@
     gap: 30px;
   }
 
-  .wrapper {
+  .sized-wrapper {
     max-width: 400px;
   }
 }
@@ -65,14 +65,14 @@
     gap: 30px;
   }
 
-  .wrapper {
+  .sized-wrapper {
     max-width: 600px;
   }
 }
 
 body {
   background-color: #FAF5EF;
-  justify-content: center;
+  /* justify-content: center; */
   font-family: Cormorant Garamond;
   font-weight: 400;
 }
