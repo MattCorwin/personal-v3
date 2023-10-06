@@ -3,7 +3,7 @@ module.exports = {
   ignoredRouteFiles: ["**/.*"],
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
-  // serverBuildPath: "build/index.js",
+  serverBuildPath: "build/index.js",
   // publicPath: "/build/",
   serverModuleFormat: "cjs",
   serverDependenciesToBundle: ["@phosphor-icons/react"],
