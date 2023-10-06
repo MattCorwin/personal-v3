@@ -67,7 +67,7 @@ can only handle 512 tokens of total input. For the next iteration of this projec
     chunk_size = 360 - question_length
     chunks = [articleText[i : i + chunk_size] for i in range(0, len(articleText), chunk_size)]
 
-Finally, tokenize the question and context, and pass them to the model for prediction, converting the output back to text from tokens.
+Finally, tokenize the question and context, and pass them to the model for prediction. Then convert the model output from tokens back into text.
 
     inputs = tokenizer.encode_plus(
       question.split(), question_context, add_special_tokens=True, is_split_into_words=True, truncation=True, max_length=512, return_tensors="pt"
@@ -135,7 +135,7 @@ what the entrypoint is for our lambda.
     # Set the CMD to your handler
     CMD ["app.lambda_handler"]
 
-## Using The Serverless Framework For IAC
+## Using The Serverless Framework For IAC (not necessary if you followed the SST steps above)
 
 Here is an example of declaring the Docker image in a serverless.ts file. This tells Serverless to look for a Dockerfile in the /functions directory,
 which Serverless uses to build a Docker container named pythonlambdaimage and store it in ECR.
@@ -166,6 +166,8 @@ Other errors I ran into:
 the amount of tokens I was passing the encode function, and setting truncation=True as a fallback.
 - TypeError: PreTokenizedInputSequence must be Union[List[str], Tuple[str]] - I was initially passing the encode function the full string question,
 while the context was a list of strings. The tokenizer expects the two items to be of the same type, either an unsplit string or list of strings.
+- Rust version errors - For some reason when using the Python 3.10 lambda container image as a base in the Dockerfile I was seeing some odd rust version errors.
+Python 3.9 worked like a charm.
 
 ## Future Revisions
 
