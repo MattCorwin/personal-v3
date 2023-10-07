@@ -1,25 +1,25 @@
-import hugging from "../images/hf-logo-c.png";
+import hugging from '../images/hf-logo-c.png';
 
 type Post = {
-  slug: string;
-  title: string;
-  date: string;
-  summary?: string;
-  image: any;
-  imageAltText: string;
-  markdown: string;
+    slug: string;
+    title: string;
+    date: string;
+    summary?: string;
+    image: any;
+    imageAltText: string;
+    markdown: string;
 };
 
 const posts: { [key: string]: Post } = {
-  "open-source-machine-learning-aws-v1": {
-    slug: "open-source-machine-learning-aws-v1",
-    title: "Deploying a machine learning model to AWS",
-    date: "10-05-23",
-    summary:
-      "Deploying a machine learning model from huggingface to AWS Lambda, backed by a Docker container.",
-    image: hugging,
-    imageAltText: "Logo of HuggingFace, the hugging face emoji",
-    markdown: `
+    'open-source-machine-learning-aws-v1': {
+        slug: 'open-source-machine-learning-aws-v1',
+        title: 'Deploying a machine learning model to AWS',
+        date: '10-05-23',
+        summary:
+            'Deploying a machine learning model from huggingface to AWS Lambda, backed by a Docker container.',
+        image: hugging,
+        imageAltText: 'Logo of HuggingFace, the hugging face emoji',
+        markdown: `
 ## Overview
 
 I recently used AWS Lambda to host an open source Pytorch machine learning model.
@@ -185,13 +185,13 @@ Thanks for reading!
 [AWS Walkthrough on this topic](https://aws.amazon.com/blogs/machine-learning/using-container-images-to-run-pytorch-models-in-aws-lambda/)  
 [Serverless Lambda Function Docs](https://www.serverless.com/framework/docs/providers/aws/guide/functions)
     `.trim(),
-  },
+    },
 };
 
 export function getPosts(): Array<Post> {
-  return Object.values(posts);
+    return Object.values(posts);
 }
 
 export function getPost(slug: string): Post {
-  return posts[`${slug}`];
+    return posts[`${slug}`];
 }
