@@ -32,7 +32,7 @@ Serverless framework to get to the same goal. I'll also link to an AWS walkthrou
 
 First I set up a Python lambda to handle our incoming REST request. [This file](https://github.com/MattCorwin/personal-v3/blob/main/functions/inference/app.py)
 is the full handler function code you can reference. I'll step through a bit of what is going on in there. The model used in this example is
-[distilbert-base-uncased-distilled-squad]("https://huggingface.co/distilbert-base-uncased-distilled-squad").
+[distilbert-base-uncased-distilled-squad](https://huggingface.co/distilbert-base-uncased-distilled-squad).
 
 
 The following is a util function that uses the BeautifySoup package to fetch the web page for a given URL and scrape all the text from all paragraph html elements,
