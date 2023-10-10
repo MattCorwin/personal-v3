@@ -1,4 +1,5 @@
 import hugging from '../images/hf-logo-c.png';
+import dynamo from '../images/dynamo.png';
 
 type Post = {
     slug: string;
@@ -32,7 +33,7 @@ Serverless framework to get to the same goal. I'll also link to an AWS walkthrou
 
 First I set up a Python lambda to handle our incoming REST request. [This file](https://github.com/MattCorwin/personal-v3/blob/main/functions/inference/app.py)
 is the full handler function code you can reference. I'll step through a bit of what is going on in there. The model used in this example is
-[distilbert-base-uncased-distilled-squad]("https://huggingface.co/distilbert-base-uncased-distilled-squad").
+[distilbert-base-uncased-distilled-squad](https://huggingface.co/distilbert-base-uncased-distilled-squad).
 
 
 The following is a util function that uses the BeautifySoup package to fetch the web page for a given URL and scrape all the text from all paragraph html elements,
@@ -186,6 +187,71 @@ Thanks for reading!
 [Serverless Lambda Function Docs](https://www.serverless.com/framework/docs/providers/aws/guide/functions)
     `.trim(),
     },
+    'aws-dynamodb-performance-tuning': {
+      slug: 'aws-dynamodb-performance-tuning',
+      title: 'Performance Tuning DynamoDB - Lessons Learned',
+      date: '10-10-23',
+      summary:
+          'DynamoDB key structure, GSIs, and implications for performance and streaming.',
+      image: dynamo,
+      imageAltText: 'Logo of AWS DynamoDB',
+      markdown: `
+## Overview
+
+I've helped set up many DynamoDB tables at this point as the datastore for microservices. I've run into several interesting issues, so I'll jot them
+down here in case they are helpful.
+
+## Intro
+
+I'll assume some basic knowledge around DynamoDB's key structure and options, you can take a look at the docs [here](https://aws.amazon.com/blogs/database/choosing-the-right-dynamodb-partition-key/).
+I'll dive into some of the ways we've designed the keys for our tables, but the main initial callout is that you are limited in the ways you can access data, so you have to figure out your data access patterns before
+you design your keys, which consist of either a partition(hash) key or partition(hash) key and a sort(range) key. Also, if your access patterns vary a ton and/or you have a really wide data structure, you should probably consider a 
+relational database rather than DynamoDB. I've learned this the hard way :)
+
+## Traditional Key Structure
+
+In a traditional DynamoDB key setup, you determine your main access patterns and key your table based on those access patterns. In a multi-tenant table that could look something like a partition key of tenantID
+and a hierarchical sort key like country||state||city (where || is a delimiter). So you could query for all tenant data with the partition key, or query for a tenant and country, or tenant, country, and state, etc. It should
+be noted that the combination of partition key and sort key must be unique, since that is essentially the foreign key for the item. If you need other access patterns, you can build a GSI (Global Secondary Index) with a different
+sort key organized for the secondary access pattern. The callout here is that you cannot do a strongly consistent read against GSIs. This will become more important to be aware of in the next key setup.
+
+## Write Optimized Key Structure
+
+After some time working with the traditional key structure, we realized that we could speed things up by making some tweaks. DynamoDB operates on the idea of shards, with the partition key determining which database shard/partition
+an item is stored in. We were doing nightly data loads of large amounts of tenant data, which would "heat up" the specific database shard associated with the tenant. By spreading our items out across multiple shards we could speed up the write side of our operations.
+(If you are writing data infrequently or using more of a change data capture type ingest then this pattern is probably not as useful for you.) We spread the items across shards by using a random UUID as the hash key for the item, and created a GSI with the more traditional
+key structure which would be used to access items.
+
+## Shortcomings of the Write Optimized Key Structure
+
+Some issues arose with this table structure. If you are clearing out and writing new items regularly, you have to be careful to delete all the old records or you can create duplicates. This is because assigning a UUID for the item's hash key
+means the previous version of the item (that in reality would have the same key in the traditional key structure) will not be overwritten by the new item. You will have to do explicit deletes on all old items before reimporting new tenant data if there is
+an overlap between the data already in Dynamo and the incoming data.
+
+Strongly consistent reads are only possible on the original hash key, not GSIs. If you are updating items frequently and don't have the item's hash key available, then you will have to look up your item by the GSI keys, and then do a second strongly consistent
+read by the item's original hash key. This takes extra time and db usage.
+
+DynamoDB stream events are only guaranteed to arrive in sequence per database shard. This was the big one for us. I was using DynamoDB stream events to de-normalized the data (remember what I said about learning the hard way) into another differently keyed table item
+(with a one to many relationship with the original record), and noticed that in our nightly "delete everything and reimport" cycle, that the deletes for an item would sometimes land in the lambda stream handler function AFTER the write for the new item, resulting in the de-normalized
+copy of the data being deleted after being written. This occurred because we were changing the item's hash key between delete and re-write (since it is a randomly assigned UUID), so Dynamo didn't know that they were the same item and didn't preserve the order of database operations in the stream events.
+
+## Blended approach
+
+In order to address the final shortcoming there, but keep the performance increases we saw by spreading out the database writes across multiple shards, I ended up using a UUID v5 for the item's hash key instead of a v4 UUID. For us this was easy because the sort key we were using for our GSI
+was unique, which meant I could just hash the sort key as a v5 uuid. This means we get the write speed of a UUID hash key, but the same sort key would receive the same v5 UUID across imports, resulting in the Dynamo stream events landing in the correct sequence. This comes with a couple of other
+benefits. First when we have the full sort key available we can convert it to it's v5 UUID hash and do a strongly consistent read instantly. Secondly we can move our import to one that doesn't do a full delete of all records, but instead overwrites the records that match between incoming records
+and current db records, and then just do a cleanup step for any records that were previously present in the db but not in the incoming dataset. Dynamo $ saved!
+
+Thanks for reading! I hope all that jabbering was useful and made at least a little sense.
+
+## Shameless Plug - [HIRE ME!](https://www.linkedin.com/in/matt-corwin/)
+I am looking for my next role, and I love to build cool stuff. I'd appreciate any connections you can make to help me find the right position!
+
+## Useful Links
+
+[DynamoDB Docs on sort keys](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-sort-keys.html) 
+  `.trim(),
+  },
 };
 
 export function getPosts(): Array<Post> {
