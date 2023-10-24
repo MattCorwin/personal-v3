@@ -1,5 +1,7 @@
 import hugging from '../images/hf-logo-c.png';
 import dynamo from '../images/dynamo.png';
+import chatgpt from '../images/chatGPTlogo.webp';
+
 
 type Post = {
     slug: string;
@@ -12,6 +14,96 @@ type Post = {
 };
 
 const posts: { [key: string]: Post } = {
+  'how-to-use-ChatGPT-local-scripting': {
+    slug: 'how-to-use-ChatGPT-local-scripting',
+    title: 'Writing a local ChatGPT script in Node.js',
+    date: '10-24-23',
+    summary:
+        'How to write a local Node.js script for programatically generating content (or code)',
+    image: chatgpt,
+    imageAltText: 'ChatGPT Logo',
+    markdown:`
+## Overview
+
+ChatGPT can be really handy for generating content, but I wanted to use it more programatically to automate tasks and create files that I could utilize in my code.
+I wrote up a little js file that you can call from the command line to generate a json file. You can repurpose this to generate whatever file structure you need.
+One nice thing about using the ChatGPT API is that you can access the GPT-4 model from the API without being a GPT Plus subscriber.
+
+## Prerequisites
+
+You will need a [ChatGPT API key](https://platform.openai.com/signup) and Node.js installed. Keep your key secret, and don't commit it to your codebase.
+
+## Env setup
+First lets install the [openai NPM package](https://www.npmjs.com/package/openai) we'll use in our script file:
+
+    npm i openai
+
+I'll use dotenv to get the API key into our script file. If you don't push the script file to your source control, you can skip that step but make sure your
+script file is included in your .gitignore file. Run the following in your shell to install dotenv:
+
+    npm i dotenv
+
+Next we'll create a file called .env at our project root, which will contain one line:
+
+    OPEN_AI_API_KEY: 'your-api-key-here'
+
+Now we have a variable that we can access in our script by referencing process.env.OPEN_AI_API_KEY. Finally, make sure .env is present in your .gitignore file to keep your key out of source control.
+
+## Script
+
+Now we can create a .js file for our script (ie script.js). If you want to use Typescript, you can create a .ts file and run it through esbuild before running the script.
+If you go that route, I'd just create a script in package.json that will build the .js file with esbuild and then invoke the resulting js. Here is an example .js file, using require() imports so we don't
+have to run a build step:
+
+    const OpenAI = require("openai");
+    const fs = require("fs");
+    require('dotenv').config();
+    
+    const openai = new OpenAI({
+      apiKey: process.env.OPEN_AI_API_KEY,
+    });
+    
+    async function main() {
+      const chatCompletion = await openai.chat.completions.create({
+        messages: [
+          {
+            role: "user",
+            content:
+              \`Write a 500 word blog post on cheese. Format the response as a JSON object with the following format and content:
+              {
+                title: Blog Post Title,
+                date: The current date,
+                summary: A short summary of the blog post,
+                markdown: A string containing the markdown representation of the blog post
+              }
+              Do not add any preceding text, the response should be valid, parseable JSON. Please use <br> as the newline character in place of \\n in the markdown.\`,
+          },
+        ],
+        model: "gpt-4",
+      });
+    
+      console.log(chatCompletion.choices);
+      fs.writeFileSync(
+        \`\${__dirname}/completion.json\`,
+        chatCompletion.choices[0].message.content,
+        {
+          flag: "w",
+        }
+      );
+    }
+    
+    main();
+
+## Execution
+
+In your shell of choice, navigate to the directory containing script.js and run:
+
+    node script.js
+
+You should see a new file appear named completion.json with your ChatGPT response! If you don't have access to the gpt-4 model yet, you may have gotten an error.
+Swap out the model string with gpt-3.5, or gpt-3.5-turbo and you should be off to the races. Now you can import the resulting json into your app. Have fun!
+    `.trim(),
+  },
     'open-source-machine-learning-aws-v1': {
         slug: 'open-source-machine-learning-aws-v1',
         title: 'Deploying a machine learning model to AWS',

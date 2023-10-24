@@ -41,7 +41,7 @@ export default function Blog() {
                                     className="rounded-image"
                                     src={post.image}
                                     alt={post.imageAltText}
-                                    style={{ maxWidth: '250px' }}
+                                    style={{ width: '220px', height: '220px' }}
                                 />
                             </div>
                             <div
