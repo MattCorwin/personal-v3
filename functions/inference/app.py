@@ -1,5 +1,4 @@
 import json
-from transformers import AutoTokenizer, AutoModelForQuestionAnswering
 import torch
 import requests
 from bs4 import BeautifulSoup
@@ -18,17 +17,24 @@ def scrapePageText(url):
     print('returning page text')
     return text.split()
 
-
 articleText = []
 tokenizer = False
 model = False
+
+def initialize():
+    if not tokenizer:
+        from transformers import AutoTokenizer, AutoModelForQuestionAnswering
+        tokenizer = AutoTokenizer.from_pretrained("model/")
+        model = AutoModelForQuestionAnswering.from_pretrained("model/")
+    
+
 # tokenizer = AutoTokenizer.from_pretrained("model/")
 # model = AutoModelForQuestionAnswering.from_pretrained("model/")
 
 def lambda_handler(event, context):
     global articleText
-    global tokenizer
-    global model
+    
+    initialize()
     
     body = json.loads(event["body"])
     print(articleText)
@@ -39,12 +45,6 @@ def lambda_handler(event, context):
     question = body["question"]
     print(question)
     
-    if not tokenizer:
-        tokenizer = AutoTokenizer.from_pretrained("model/")
-    
-    if not model:
-        model = AutoModelForQuestionAnswering.from_pretrained("model/")
-
     question_length = len(question.split())
     chunk_size = 360 - question_length
     chunks = [articleText[i : i + chunk_size] for i in range(0, len(articleText), chunk_size)]
