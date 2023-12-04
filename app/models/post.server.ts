@@ -363,13 +363,15 @@ when my request took longer than 30 seconds to respond. Here's how I solved that
 
 I set up a websocket endpoint so that I could make a call to ChatGPT and stream the response back to the UI, without being limited by API Gateway's 30 second
 timeout. I was surprised when, after connecting and sending a message to the websocket handler function that process the message I was still seeing timeouts. This
-was happening because that initial message the invokes the handler function was still being accessed via API Gateway and thus subject to the 30 second limit.
+was happening because the initial message that invokes the handler function was still being accessed via API Gateway and thus subject to the 30 second limit.
 
 ## The Solution
 
 I assumed there was some config that I could set in API Gateway that would let me get around this issue. Searching around, the recommendation I came to was to
 pass a header to the request that told API Gateway to forget the time limit. Unfortunately, I couldn't find a way to add a request header to the websocket message
-(the demo I found was done in Postman rather than via a real application). The solution I settled on was to invoke a separate Lambda function with the message, passing the
+(the demo I found was done in Postman rather than via a real application).
+
+The solution I settled on was to invoke a separate Lambda function with the message, passing the
 second Lambda the necessary connection information to get the response to the UI. This allows the initially invoked Lambda function to return a response before the
 30 second timeout (in my experience it doesn't matter what that response is, so long as the lambda exits before the timeout). I was already sending SNS messages
 from the Lambda handler function, so I just used SNS to invoke the new Lambda, but you could directly invoke the Lambda with the AWS SDK as well.
