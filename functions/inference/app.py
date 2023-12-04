@@ -22,6 +22,8 @@ tokenizer = False
 model = False
 
 def initialize():
+    global tokenizer
+    global model
     if not tokenizer:
         from transformers import AutoTokenizer, AutoModelForQuestionAnswering
         tokenizer = AutoTokenizer.from_pretrained("model/")
