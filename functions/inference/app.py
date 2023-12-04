@@ -19,10 +19,12 @@ def scrapePageText(url):
 articleText = []
 tokenizer = False
 model = False
+torch = False
 
 def initialize():
     global tokenizer
     global model
+    global torch
     if not tokenizer:
         import torch
         from transformers import AutoTokenizer, AutoModelForQuestionAnswering
