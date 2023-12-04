@@ -1,6 +1,7 @@
 import hugging from '../images/hf-logo-c.png';
 import dynamo from '../images/dynamo.png';
 import chatgpt from '../images/chatGPTlogo.webp';
+import aws from '../images/aws-circuit.png';
 
 
 type Post = {
@@ -344,6 +345,78 @@ I am looking for my next role, and I love to build cool stuff. I'd appreciate an
 [DynamoDB Docs on sort keys](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-sort-keys.html) 
   `.trim(),
   },
+  'resolving-websocket-lambda-api-gateway-timeouts': {
+    slug: 'resolving-websocket-lambda-api-gateway-timeouts',
+    title: 'Resolving Websocket Lambda Timeout Errors',
+    date: '10-10-23',
+    summary:
+        'How I resolved timeout errors when using AWS Lambda to back Websocket communication.',
+    image: aws,
+    imageAltText: 'Logo of AWS above a circuit board',
+    markdown: `
+## Overview
+
+I recently set up websocket communication within my hobby project [LinkedIn Job Tools](https://linkedinjobtools.com), and was seeing API Gateway timeout errors
+when my request took longer than 30 seconds to respond. Here's how I solved that issue.
+
+## The Problem
+
+I set up a websocket endpoint so that I could make a call to ChatGPT and stream the response back to the UI, without being limited by API Gateway's 30 second
+timeout. I was surprised when, after connecting and sending a message to the websocket handler function that process the message I was still seeing timeouts. This
+was happening because that initial message the invokes the handler function was still being accessed via API Gateway and thus subject to the 30 second limit.
+
+## The Solution
+
+I assumed there was some config that I could set in API Gateway that would let me get around this issue. Searching around, the recommendation I came to was to
+pass a header to the request that told API Gateway to forget the time limit. Unfortunately, I couldn't find a way to add a request header to the websocket message
+(the demo I found was done in Postman rather than via a real application). The solution I settled on was to invoke a separate Lambda function with the message, passing the
+second Lambda the necessary connection information to get the response to the UI. This allows the initially invoked Lambda function to return a response before the
+30 second timeout (in my experience it doesn't matter what that response is, so long as the lambda exits before the timeout). I was already sending SNS messages
+from the Lambda handler function, so I just used SNS to invoke the new Lambda, but you could directly invoke the Lambda with the AWS SDK as well.
+
+There is an added benefit to this approach. I put all the business logic in the Lambda handler function (creating the prompt and formatting input data), and passed all
+the ChatGPT prompt info into the second Lambda, which allows me to have a function that takes in a prompt and connection info, and streams response data back to the UI.
+I'll definitely reuse that Lambda for future projects. One important reminder here is that you have to add the appropriate permissions for the new Lambda function to manage the api connection
+(execute-api:ManageConnections). I'm ending the connection from the second Lambda after streaming, you might get away with another more tightly scoped permission
+if you are just sending messages to the connection.
+
+## The Code
+
+Adding the Lambda permissions (in SST stack):
+
+    streamFunction.attachPermissions([
+      new iam.PolicyStatement({
+        actions: ["execute-api:ManageConnections"],
+        effect: iam.Effect.ALLOW,
+        resources: [api._connectionsArn],
+      }),
+    ]);
+
+SNS Contoller using AWS SDK V3 to invoke your second Lambda:
+
+    import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
+    import { Topic } from "sst/node/topic";
+    
+    export class SNSController {
+      private sns: SNSClient;
+    
+      constructor() {
+        this.sns = new SNSClient();
+      }
+    
+      public async sendStreamResponseMessage(connectionId: string, domainName: string, stage: string, prompt: string, systemMessage: string, email: string) {
+        await this.sns.send(
+          new PublishCommand({
+            Message: JSON.stringify({ connectionId, domainName, stage, prompt, systemMessage, email }),
+            TopicArn: Topic.stream.topicArn,
+          })
+        );
+      };
+    };
+
+  Did I leave out some code that you wanted to see? I'll share! [Hit me up on LinkedIn](https://www.linkedin.com/in/matt-corwin/)
+`.trim(),
+},
 };
 
 export function getPosts(): Array<Post> {
