@@ -20,11 +20,16 @@ def scrapePageText(url):
 
 
 articleText = []
-tokenizer = AutoTokenizer.from_pretrained("model/")
-model = AutoModelForQuestionAnswering.from_pretrained("model/")
+tokenizer = False
+model = False
+# tokenizer = AutoTokenizer.from_pretrained("model/")
+# model = AutoModelForQuestionAnswering.from_pretrained("model/")
 
 def lambda_handler(event, context):
     global articleText
+    global tokenizer
+    global model
+    
     body = json.loads(event["body"])
     print(articleText)
 
@@ -33,6 +38,12 @@ def lambda_handler(event, context):
 
     question = body["question"]
     print(question)
+    
+    if not tokenizer:
+        tokenizer = AutoTokenizer.from_pretrained("model/")
+    
+    if not model:
+        model = AutoModelForQuestionAnswering.from_pretrained("model/")
 
     question_length = len(question.split())
     chunk_size = 360 - question_length
