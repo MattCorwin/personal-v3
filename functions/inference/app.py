@@ -1,5 +1,4 @@
 import json
-import torch
 import requests
 from bs4 import BeautifulSoup
 
@@ -25,6 +24,7 @@ def initialize():
     global tokenizer
     global model
     if not tokenizer:
+        import torch
         from transformers import AutoTokenizer, AutoModelForQuestionAnswering
         tokenizer = AutoTokenizer.from_pretrained("model/")
         model = AutoModelForQuestionAnswering.from_pretrained("model/")
