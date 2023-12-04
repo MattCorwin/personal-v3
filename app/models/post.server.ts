@@ -348,7 +348,7 @@ I am looking for my next role, and I love to build cool stuff. I'd appreciate an
   'resolving-websocket-lambda-api-gateway-timeouts': {
     slug: 'resolving-websocket-lambda-api-gateway-timeouts',
     title: 'Resolving Websocket Lambda Timeout Errors',
-    date: '10-10-23',
+    date: '12-4-23',
     summary:
         'How I resolved timeout errors when using AWS Lambda to back Websocket communication.',
     image: aws,
